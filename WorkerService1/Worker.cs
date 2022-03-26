@@ -68,9 +68,12 @@ namespace WorkerService1
 
                 consumer.Shutdown += (sender, args) =>
                 {
-                    _logger.LogInformation("已收到Shutdown請求");
-                    this._isShutdown = true;
-                    this.TimerStart();
+                    if (args.ToString().Contains("Closed via management plugin"))
+                    {
+                        _logger.LogInformation("已收到Shutdown請求");
+                        this._isShutdown = true;
+                        this.TimerStart();
+                    }
                 };
 
                 channel.BasicConsume(queue: "task_queue", autoAck: false, consumer: consumer);
